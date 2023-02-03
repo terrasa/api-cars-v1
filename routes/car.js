@@ -1,5 +1,5 @@
 import express from 'express'
-import { addCar, listItems, upFile, randomItem, showFile } from '../controllers/car.js'
+import { addCar, listItems, upFile, randomItem, showFile, search } from '../controllers/car.js'
 import multer from 'multer'
 
 const router = express.Router()
@@ -22,7 +22,8 @@ export const routes = [
   router.post('/list_car', addCar),
   router.post('/up_file/:id', [upFiles.single('file')], upFile),
   router.get('/show_file/:file?', showFile),
-  router.get('/list_car/', showFile)
+  router.get('/list_car/', showFile),
+  router.get('/search_car/:search', search)
 
 ]
 

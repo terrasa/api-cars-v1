@@ -3,6 +3,7 @@ import { validationPostPut } from '../helpers/validationPost.js'
 import { randomIndex } from '../helpers/randomItem.js'
 import fs from 'fs'
 import path from 'path'
+import { response } from 'express'
 
 export const upFile = (req, res) => {
   const file = req.file.originalname
@@ -51,9 +52,21 @@ export const listItems = (req, res) => {
   if (req.params.last && Number.isInteger(+req.params.last)) {
     search.limit(req.params.last)
   }
-  if (req.query.showFile) {
-    console.log(req.query, req.query.showFile)
-  }
+
+  // showFile
+  // if (req.query.showFile) {
+  //   console.log(req.query, req.query.showFile)
+  //   search.countDocuments({})
+  //   const countDocs = count
+  //   console.log(countDocs)
+  //   // search.countDocuments({}).exec((err, count) => {
+  //   //   if (err) {
+  //   //     return console.log(err)
+  //   //   }
+  //   //   const countDocs = count
+  //   //   console.log(countDocs)
+  //   // })
+  // }
 
   // if (req.query) { // no es necesario, si no existe, devuelve un objeto vacio y busca todos
   //   console.log('puesss...', req.query)
@@ -166,4 +179,30 @@ export const showFile = (req, res) => {
       })
     }
   })
+}
+
+// Pte ver si es posible integrarlo en listItems
+
+export const search = (req, res) => {
+  const search = req.params.search
+
+  Car.find({
+    $or: [
+      { maker: { $regex: search, $options: 'i' } }, // Espresión regular mediante patrón regex
+      { model: { $regex: search, $options: 'i' } }
+    ]
+  })
+    .sort({ date: -1 })
+    .exec((err, items) => {
+      if (err || !items) {
+        return response.status(404).json({
+          status: 'error',
+          mensaje: 'No tenemos resultados'
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        items
+      })
+    })
 }

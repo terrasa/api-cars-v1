@@ -9,9 +9,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "nodemon": "nodemon main.js",
-    "nodemon2": "nodemon server.js"
+    "nodemon2": "nodemon server.js",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
+    "gh-pages": "^5.0.0",
     "nodemon": "^2.0.20",
     "vite": "^4.0.0"
   },
