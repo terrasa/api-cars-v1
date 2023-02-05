@@ -206,3 +206,82 @@ export const search = (req, res) => {
       })
     })
 }
+
+export const removeItem = (req, res) => {
+  const itemId = req.params.id
+  console.log(itemId)
+  Car.findByIdAndDelete({ _id: itemId }, (error, items) => {
+    console.log(itemId)
+    if (error || !items) {
+      return res.status(500).json({
+        status: 'error',
+        mensaje: 'Algo falla, error o no encuentra el artículo'
+      })
+    }
+    return res.status(200).json({
+      status: 'success',
+      items
+    })
+  })
+}
+
+export const removeItemSearch = (req, res) => {
+  const search = Car.find(req.query)
+
+  search
+    .exec((error, items) => {
+      if (error || !items) {
+        return res.status(404).json({
+          status: 'error',
+          mensaje: 'No se han encontrado resultados'
+        })
+      }
+      const itemsId = items
+      const a = []
+      itemsId.forEach((el) => {
+        const itemInd = el._id.toString()
+        a.push(el._id.toString())
+        // Car.findByIdAndDelete({ _id: itemInd }, (error, items) => {
+        //   if (error || !items) {
+        //     return res.status(500).json({
+        //       status: 'error',
+        //       mensaje: 'Algo falla, error o no encuentra el artículo'
+        //     })
+        //   }
+        //   return res.status(200).json({
+        //     status: 'success',
+        //     items
+        //   })
+        // })
+      })
+      return res.send(console.log(a))
+    })
+}
+
+export const updateItem = (req, res) => {
+  const itemId = req.params.id
+  const parameters = req.body
+
+  // Validar datos, Validator
+  try {
+    validationPostPut(parameters)
+  } catch (error) {
+    return res.status(400).json({
+      status: error,
+      mensaje: 'Faltan datos por enviar'
+    })
+  }
+
+  Car.findByIdAndUpdate({ _id: itemId }, parameters, { new: true }, (error, items) => {
+    if (error || !items) {
+      return res.status(500).json({
+        status: 'error',
+        mensaje: 'Algo falla, error al actualizar'
+      })
+    }
+    return res.status(200).json({
+      status: 'success',
+      items
+    })
+  })
+}
